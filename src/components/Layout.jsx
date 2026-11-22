@@ -1,7 +1,7 @@
 import { NavLink, Link } from 'react-router-dom'
 import { BUSINESS } from '../data/business.js'
 
-export default function Layout({ children }) {
+export default function Layout({ children, cartCount }) {
   return (
     <>
       <a className="skip-link" href="#main">
@@ -21,6 +21,11 @@ export default function Layout({ children }) {
               </li>
               <li>
                 <NavLink to="/menu">Menu</NavLink>
+              </li>
+              <li>
+                <NavLink to="/cart">
+                  Cart <span className="cart-count">{cartCount}<span className="visually-hidden"> items</span></span>
+                </NavLink>
               </li>
             </ul>
           </nav>

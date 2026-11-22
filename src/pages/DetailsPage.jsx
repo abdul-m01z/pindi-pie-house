@@ -2,20 +2,34 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import FoodImage from '../components/FoodImage.jsx'
 import AvailabilityBadge from '../components/AvailabilityBadge.jsx'
+import QuantityControl from '../components/QuantityControl.jsx'
 import NotFound from './NotFound.jsx'
 import { formatMoney, priceWithGst, GST_PERCENT } from '../lib/pricing.js'
+import { itemQuantity } from '../lib/cart.js'
+import { checkItemQuantity } from '../rules/maxPerItem.js'
 
-export default function DetailsPage({ menu }) {
+export default function DetailsPage({ menu, cart, onAddToCart }) {
   const { id } = useParams()
   const item = menu.find((m) => m.id === id)
   if (!item) return <NotFound what="dish" />
-  return <ItemDetails key={item.id} item={item} />
+  return <ItemDetails key={item.id} item={item} cart={cart} onAddToCart={onAddToCart} />
 }
 
-function ItemDetails({ item }) {
+function ItemDetails({ item, cart, onAddToCart }) {
   const [sizeId, setSizeId] = useState(item.sizes[0].id)
+  const [quantity, setQuantity] = useState(1)
+  const [added, setAdded] = useState('')
   const size = item.sizes.find((s) => s.id === sizeId)
   const price = priceWithGst(size.price)
+  const inCart = itemQuantity(cart, item.id)
+  const rule = checkItemQuantity({ quantity, stock: item.stock, alreadyInCart: inCart })
+
+  function handleAdd() {
+    if (!rule.ok) return
+    onAddToCart(item.id, size.id, quantity)
+    setAdded(`Added ${quantity} × ${item.name} (${size.label}) to your cart.`)
+    setQuantity(1)
+  }
 
   return (
     <>
@@ -74,6 +88,28 @@ function ItemDetails({ item }) {
               <dd>{formatMoney(price.gross)}</dd>
             </div>
           </dl>
+
+          <QuantityControl
+            id="details-qty"
+            label="Quantity"
+            value={quantity}
+            stock={item.stock}
+            alreadyInCart={inCart}
+            onChange={(n) => {
+              setAdded('')
+              setQuantity(n)
+            }}
+          />
+          {inCart > 0 && <p className="muted">You already have {inCart} of this dish in your cart.</p>}
+          {!rule.ok && <p className="field__error">{rule.message}</p>}
+
+          <button type="button" className="btn btn--primary" disabled={!rule.ok} onClick={handleAdd}>
+            Add to cart
+          </button>
+          <p role="status" className="added-note">
+            {added}{' '}
+            {added && <Link to="/cart">View cart</Link>}
+          </p>
         </div>
       </div>
     </>

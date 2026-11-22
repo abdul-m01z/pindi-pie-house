@@ -35,3 +35,9 @@ export function priceWithGst(rupees) {
   const gst = Math.round((net * GST_PERCENT) / 100)
   return { net, gst, gross: net + gst }
 }
+
+// Signed amount for the rounding line, e.g. "+PKR 0.30" or "−PKR 0.20".
+export function formatSigned(paisa) {
+  const sign = paisa < 0 ? '−' : '+'
+  return `${sign}${formatMoney(Math.abs(paisa))}`
+}
