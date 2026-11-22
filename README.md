@@ -2,12 +2,16 @@
 
 **Abdul Moiz** · Roll no. 24I2006 · Section C · CS4032 Web Programming, Assignment 02 (Fall 2026)
 
+![Pindi Pie House home page: the hero changes frame as you scroll](docs/preview-hero.jpg)
+
 A React ordering site for a fictional pizza business serving students in Islamabad and Rawalpindi. Customers browse
 the menu, search and filter, open a dish, build a cart, choose delivery or pickup, fill in a checkout form and reach a
 simulated confirmation. It addresses three problems found on <https://www.pizzahutpakistan.com/> (see `DECISIONS.md`).
 
 - GitHub: <https://github.com/abdul-m01z/pindi-pie-house>
 - Deployment: <https://pindi-pie-house.vercel.app>
+
+![Menu with search, filters, sort and delivery details](docs/preview-menu.jpg)
 
 ## Commands
 
