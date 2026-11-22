@@ -5,6 +5,7 @@ import OrderSummary from '../components/OrderSummary.jsx'
 import FulfilmentPanel from '../components/FulfilmentPanel.jsx'
 import IssueList from '../components/IssueList.jsx'
 import KitchenStatus from '../components/KitchenStatus.jsx'
+import ChangeNotice from '../components/ChangeNotice.jsx'
 import StatusMessage from '../components/StatusMessage.jsx'
 import { formatMoney } from '../lib/pricing.js'
 import { itemQuantity } from '../lib/cart.js'
@@ -22,6 +23,9 @@ export default function CartPage({
   onRemove,
   onFixCart,
   fixMessages,
+  notice,
+  onUndo,
+  onDismissNotice,
 }) {
   if (lines.length === 0) {
     return (
@@ -69,7 +73,7 @@ export default function CartPage({
                     <FoodImage src={line.item.image} name={line.item.name} className="cart-line__image" />
                     <div className="cart-line__body">
                       <h3>
-                        <Link to={`/menu/${line.item.id}`}>{line.item.name}</Link>
+                        <Link to={`/menu/${line.item.id}`} className="touch-link">{line.item.name}</Link>
                       </h3>
                       <p className="muted">
                         {line.size.label} · {formatMoney(line.size.price * 100)} each
@@ -110,6 +114,7 @@ export default function CartPage({
 
         <aside>
           <FulfilmentPanel fulfilment={fulfilment} onChange={onFulfilmentChange} />
+          <ChangeNotice notice={notice} onUndo={onUndo} onDismiss={onDismissNotice} />
           <OrderSummary summary={summary} mode={fulfilment.mode} itemCount={itemCount} />
           <IssueList issues={issues} id="cart-issues" />
           {issues.length === 0 ? (

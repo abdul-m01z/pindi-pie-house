@@ -124,7 +124,7 @@ export default function CheckoutPage({ lines, summary, itemCount, fulfilment, is
             <>
               <p>
                 <strong>Delivering to:</strong> {area ? `${area.name}, ${area.city}` : 'no area chosen'}{' '}
-                <Link to="/cart">Change</Link>
+                <Link to="/cart" className="touch-link">Change</Link>
               </p>
               {renderField({
                 name: 'address',
@@ -135,7 +135,7 @@ export default function CheckoutPage({ lines, summary, itemCount, fulfilment, is
             </>
           ) : (
             <p>
-              <strong>Pickup at:</strong> {PICKUP_POINT.name} <Link to="/cart">Change</Link>
+              <strong>Pickup at:</strong> {PICKUP_POINT.name} <Link to="/cart" className="touch-link">Change</Link>
             </p>
           )}
           <div className={`field${visibleError('notes') ? ' field--invalid' : ''}`}>
@@ -179,7 +179,7 @@ export default function CheckoutPage({ lines, summary, itemCount, fulfilment, is
               </li>
             ))}
           </ul>
-          <Link to="/cart">Edit cart</Link>
+          <Link to="/cart" className="touch-link">Edit cart</Link>
         </aside>
       </div>
     </>

@@ -14,6 +14,7 @@ import { loadMenu } from './lib/mockApi.js'
 import { calculateSummary } from './lib/pricing.js'
 import { addToCart, cartSubtotal, fixCart, removeLine, resolveCart, setQuantity } from './lib/cart.js'
 import { getBlockingIssues } from './lib/checkout.js'
+import { describeFulfilmentChange } from './lib/fulfilmentChange.js'
 import { minutesOfDay } from './lib/time.js'
 import { useLocalStorageState } from './lib/useLocalStorageState.js'
 import { useMinutesNow } from './lib/useMinutesNow.js'
@@ -33,6 +34,7 @@ export default function App() {
   const [savedFulfilment, setFulfilment] = useLocalStorageState('pph.fulfilment', { mode: 'delivery', areaId: null }, isFulfilment)
   const [order, setOrder] = useState(null)
   const [fixMessages, setFixMessages] = useState([])
+  const [notice, setNotice] = useState(null) // explains a delivery/pickup change and allows undo
   const nowMinutes = useMinutesNow()
 
   const reload = useCallback(() => {
@@ -63,16 +65,44 @@ export default function App() {
   const itemCount = lines.reduce((sum, l) => sum + (l.item ? l.quantity : 0), 0)
   const issues = getBlockingIssues({ lines, subtotal, mode: fulfilment.mode, areaId: fulfilment.areaId, nowMinutes })
 
+  // Changing delivery/pickup or area never empties the cart. The user is told what changed.
+  function handleFulfilmentChange(next) {
+    if (next.mode === fulfilment.mode && next.areaId === fulfilment.areaId) return
+    setNotice(
+      itemCount > 0
+        ? { previous: savedFulfilment, lines: describeFulfilmentChange({ subtotal, itemCount, previous: fulfilment, next }) }
+        : null,
+    )
+    setFulfilment(next)
+  }
+  function handleUndo() {
+    setFulfilment(notice.previous)
+    setNotice(null)
+  }
+
+  const orderBar = {
+    fulfilment,
+    summary,
+    itemCount,
+    onFulfilmentChange: handleFulfilmentChange,
+    notice,
+    onUndo: handleUndo,
+    onDismissNotice: () => setNotice(null),
+  }
+
   const handleAdd = (itemId, sizeId, quantity) => {
     setFixMessages([])
+    setNotice(null)
     setCart((prev) => addToCart(prev, itemId, sizeId, quantity))
   }
   const handleSetQuantity = (key, quantity) => {
     setFixMessages([])
+    setNotice(null)
     setCart((prev) => setQuantity(prev, key, quantity))
   }
   const handleRemove = (key) => {
     setFixMessages([])
+    setNotice(null)
     setCart((prev) => removeLine(prev, key))
   }
   const handleFix = () => {
@@ -114,8 +144,8 @@ export default function App() {
     <Layout cartCount={cart.reduce((sum, l) => sum + l.quantity, 0)}>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/menu" element={needMenu(<MenuPage menu={menuState.menu} onReload={reload} />)} />
-        <Route path="/menu/:id" element={needMenu(<DetailsPage menu={menuState.menu} cart={cart} onAddToCart={handleAdd} />)} />
+        <Route path="/menu" element={needMenu(<MenuPage menu={menuState.menu} onReload={reload} orderBar={orderBar} />)} />
+        <Route path="/menu/:id" element={needMenu(<DetailsPage menu={menuState.menu} cart={cart} onAddToCart={handleAdd} orderBar={orderBar} />)} />
         <Route
           path="/cart"
           element={needMenu(
@@ -125,13 +155,16 @@ export default function App() {
               summary={summary}
               itemCount={itemCount}
               fulfilment={fulfilment}
-              onFulfilmentChange={setFulfilment}
+              onFulfilmentChange={handleFulfilmentChange}
               issues={issues}
               nowMinutes={nowMinutes}
               onSetQuantity={handleSetQuantity}
               onRemove={handleRemove}
               onFixCart={handleFix}
               fixMessages={fixMessages}
+              notice={notice}
+              onUndo={handleUndo}
+              onDismissNotice={() => setNotice(null)}
             />,
           )}
         />

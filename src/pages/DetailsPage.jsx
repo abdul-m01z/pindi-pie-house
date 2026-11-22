@@ -3,19 +3,21 @@ import { Link, useParams } from 'react-router-dom'
 import FoodImage from '../components/FoodImage.jsx'
 import AvailabilityBadge from '../components/AvailabilityBadge.jsx'
 import QuantityControl from '../components/QuantityControl.jsx'
+import OrderBar from '../components/OrderBar.jsx'
 import NotFound from './NotFound.jsx'
-import { formatMoney, priceWithGst, GST_PERCENT } from '../lib/pricing.js'
+import { BUSINESS } from '../data/business.js'
+import { formatMoney, priceWithGst, GST_PERCENT, DELIVERY_FEE_PKR } from '../lib/pricing.js'
 import { itemQuantity } from '../lib/cart.js'
 import { checkItemQuantity } from '../rules/maxPerItem.js'
 
-export default function DetailsPage({ menu, cart, onAddToCart }) {
+export default function DetailsPage({ menu, cart, onAddToCart, orderBar }) {
   const { id } = useParams()
   const item = menu.find((m) => m.id === id)
   if (!item) return <NotFound what="dish" />
-  return <ItemDetails key={item.id} item={item} cart={cart} onAddToCart={onAddToCart} />
+  return <ItemDetails key={item.id} item={item} cart={cart} onAddToCart={onAddToCart} orderBar={orderBar} />
 }
 
-function ItemDetails({ item, cart, onAddToCart }) {
+function ItemDetails({ item, cart, onAddToCart, orderBar }) {
   const [sizeId, setSizeId] = useState(item.sizes[0].id)
   const [quantity, setQuantity] = useState(1)
   const [added, setAdded] = useState('')
@@ -34,8 +36,9 @@ function ItemDetails({ item, cart, onAddToCart }) {
   return (
     <>
       <p>
-        <Link to="/menu">← Back to the menu</Link>
+        <Link to="/menu" className="touch-link">← Back to the menu</Link>
       </p>
+      <OrderBar {...orderBar} />
       <div className="details">
         <FoodImage src={item.image} name={item.name} className="details__image" />
         <div className="details__body">
@@ -88,6 +91,10 @@ function ItemDetails({ item, cart, onAddToCart }) {
               <dd>{formatMoney(price.gross)}</dd>
             </div>
           </dl>
+          <p className="muted">
+            Delivery adds PKR {DELIVERY_FEE_PKR} once per order (pickup has no fee). Delivery orders need at
+            least PKR {BUSINESS.minDeliveryOrderPkr} of food.
+          </p>
 
           <QuantityControl
             id="details-qty"
@@ -108,7 +115,7 @@ function ItemDetails({ item, cart, onAddToCart }) {
           </button>
           <p role="status" className="added-note">
             {added}{' '}
-            {added && <Link to="/cart">View cart</Link>}
+            {added && <Link to="/cart" className="touch-link">View cart</Link>}
           </p>
         </div>
       </div>
