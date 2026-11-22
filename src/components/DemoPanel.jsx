@@ -36,6 +36,15 @@ export default function DemoPanel({ demo, onChange, onReset }) {
           />
           <label htmlFor="demo-empty">Load an empty menu</label>
         </div>
+        <div className="field field--check">
+          <input
+            id="demo-photos"
+            type="checkbox"
+            checked={demo.hidePhotos}
+            onChange={(e) => onChange({ hidePhotos: e.target.checked })}
+          />
+          <label htmlFor="demo-photos">Hide dish photos (tests the missing-image fallback)</label>
+        </div>
         <div className="field">
           <label htmlFor="demo-time">Pretend the time is</label>
           <select

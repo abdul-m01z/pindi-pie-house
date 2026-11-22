@@ -1,20 +1,25 @@
 /* Design tokens: colour roles, spacing and type are defined once and reused. */
 :root {
-  --cream: #fff8ef;
-  --paper: #ffffff;
-  --ink: #2a1f1a;
-  --muted: #5e5148;
-  --brick: #b8321f;
-  --brick-dark: #8f2314;
-  --olive: #3f5a25;
-  --olive-bg: #e9f1dd;
-  --mustard: #e7a93b;
-  --amber-bg: #fdecc8;
-  --danger-bg: #fbe0dc;
-  --line: #e3d5c3;
+  color-scheme: dark;
+  --bg: #0c0c0d;
+  --surface: #17171a;
+  --surface-2: #222227;
+  --text: #f4efe9;
+  --muted: #b9b1a8;
+  --red: #d9232d;
+  --red-dark: #a8161e;
+  --red-text: #ff6b70; /* red used for text and links on dark surfaces */
+  --green: #7ed48c;
+  --green-bg: #10281a;
+  --amber: #f0b429;
+  --amber-bg: #2e2410;
+  --danger-bg: #3a1215;
+  --on-red: #ffffff;
+  --line: #3a3a40;
+  --field-border: #8d8780;
   --radius: 10px;
   --space: 1rem;
-  --focus: 0 0 0 3px var(--paper), 0 0 0 6px var(--ink);
+  --focus: 0 0 0 3px var(--bg), 0 0 0 6px var(--text);
 }
 
 *,
@@ -25,8 +30,8 @@
 
 body {
   margin: 0;
-  background: var(--cream);
-  color: var(--ink);
+  background: var(--bg);
+  color: var(--text);
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   font-size: 1rem;
   line-height: 1.5;
@@ -59,7 +64,7 @@ p {
 }
 
 a {
-  color: var(--brick-dark);
+  color: var(--red-text);
 }
 
 .muted {
@@ -83,8 +88,8 @@ summary:focus-visible,
   position: absolute;
   left: 0.5rem;
   top: -4rem;
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--text);
+  color: var(--surface);
   padding: 0.6rem 1rem;
   border-radius: var(--radius);
   z-index: 100;
@@ -100,9 +105,11 @@ summary:focus-visible,
   padding: 0 var(--space);
 }
 .main {
+  min-height: 60vh;
+}
+.page {
   padding-top: 1.5rem;
   padding-bottom: 3rem;
-  min-height: 60vh;
 }
 .main:focus {
   outline: none;
@@ -110,8 +117,9 @@ summary:focus-visible,
 
 /* Header */
 .site-header {
-  background: var(--brick);
-  color: var(--paper);
+  background: #000;
+  color: var(--text);
+  border-bottom: 3px solid var(--red);
 }
 .site-header__inner {
   display: flex;
@@ -123,7 +131,7 @@ summary:focus-visible,
   padding-bottom: 0.5rem;
 }
 .brand {
-  color: var(--paper);
+  color: var(--text);
   font-weight: 800;
   font-size: 1.3rem;
   text-decoration: none;
@@ -141,23 +149,25 @@ summary:focus-visible,
   padding: 0;
 }
 .nav-list a {
-  color: var(--paper);
+  color: var(--text);
   text-decoration: none;
   min-height: 44px;
   min-width: 44px;
   padding: 0 0.9rem;
   display: inline-flex;
   align-items: center;
+  gap: 0.45rem;
   border-radius: var(--radius);
   font-weight: 600;
 }
 .nav-list a[aria-current='page'] {
-  background: var(--brick-dark);
+  background: var(--red);
+  color: var(--on-red);
   text-decoration: underline;
   text-underline-offset: 4px;
 }
 .site-header a:focus-visible {
-  box-shadow: 0 0 0 3px var(--brick), 0 0 0 6px var(--paper);
+  box-shadow: 0 0 0 3px #000, 0 0 0 6px var(--text);
 }
 
 .site-footer {
@@ -175,7 +185,7 @@ summary:focus-visible,
   min-height: 44px;
   min-width: 44px;
   padding: 0.5rem 1.2rem;
-  border: 2px solid var(--brick);
+  border: 2px solid var(--red);
   border-radius: var(--radius);
   font: inherit;
   font-weight: 700;
@@ -183,24 +193,24 @@ summary:focus-visible,
   cursor: pointer;
 }
 .btn--primary {
-  background: var(--brick);
-  color: var(--paper);
+  background: var(--red);
+  color: var(--on-red);
 }
 .btn--primary:hover {
-  background: var(--brick-dark);
+  background: var(--red-dark);
 }
 .btn--secondary {
-  background: var(--paper);
-  color: var(--brick-dark);
+  background: var(--surface);
+  color: var(--red-text);
 }
 .btn--secondary:hover {
-  background: var(--amber-bg);
+  background: var(--surface-2);
 }
 .btn:disabled,
 .btn[aria-disabled='true'] {
-  background: #e6ddd2;
-  border-color: #c9bbaa;
-  color: #5e5148;
+  background: var(--surface-2);
+  border-color: var(--line);
+  color: #9a948d;
   cursor: not-allowed;
 }
 
@@ -234,20 +244,20 @@ textarea {
   font: inherit;
   min-height: 44px;
   padding: 0.5rem 0.75rem;
-  border: 2px solid #8a7968;
+  border: 2px solid var(--field-border);
   border-radius: var(--radius);
-  background: var(--paper);
-  color: var(--ink);
+  background: var(--surface-2);
+  color: var(--text);
   width: 100%;
 }
 .field--invalid input,
 .field--invalid select,
 .field--invalid textarea {
-  border-color: var(--brick);
-  background: #fff6f4;
+  border-color: var(--red);
+  background: var(--danger-bg);
 }
 .field__error {
-  color: var(--brick-dark);
+  color: var(--red-text);
   font-weight: 600;
   margin: 0;
 }
@@ -261,12 +271,12 @@ textarea {
 .status-message {
   border: 2px solid var(--line);
   border-radius: var(--radius);
-  background: var(--paper);
+  background: var(--surface);
   padding: 1.25rem;
   margin: 1rem 0;
 }
 .status-message--error {
-  border-color: var(--brick);
+  border-color: var(--red);
   background: var(--danger-bg);
 }
 .status-message__title {
@@ -278,34 +288,34 @@ textarea {
   display: inline-block;
   padding: 0.1rem 0.55rem;
   border-radius: 999px;
-  border: 1px solid #8a7968;
-  background: var(--paper);
+  border: 1px solid var(--field-border);
+  background: var(--surface);
   font-size: 0.8rem;
   font-weight: 600;
 }
 .badge--veg {
-  background: var(--olive-bg);
-  border-color: var(--olive);
-  color: var(--olive);
+  background: var(--green-bg);
+  border-color: var(--green);
+  color: var(--green);
 }
 .badge--low {
   background: var(--amber-bg);
-  border-color: #946200;
-  color: #5c3d00;
+  border-color: var(--amber);
+  color: var(--amber);
 }
 .badge--out {
   background: var(--danger-bg);
-  border-color: var(--brick);
-  color: var(--brick-dark);
+  border-color: var(--red);
+  color: var(--red-text);
 }
 .badge--ok {
-  border-color: var(--olive);
-  color: var(--olive);
+  border-color: var(--green);
+  color: var(--green);
 }
 
 /* Home */
 .hero {
-  background: var(--paper);
+  background: var(--surface);
   border: 2px solid var(--line);
   border-radius: var(--radius);
   padding: 2rem 1.25rem;
@@ -313,7 +323,7 @@ textarea {
 }
 .hero h1 {
   font-size: 2.4rem;
-  color: var(--brick-dark);
+  color: var(--red-text);
 }
 .hero__lead {
   font-size: 1.15rem;
@@ -327,7 +337,7 @@ textarea {
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
 }
 .info-card {
-  background: var(--paper);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 1rem;
@@ -339,7 +349,7 @@ textarea {
   gap: 0 1rem;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   align-items: end;
-  background: var(--paper);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 1rem;
@@ -358,7 +368,7 @@ textarea {
 }
 .menu-card {
   position: relative;
-  background: var(--paper);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   overflow: hidden;
@@ -367,10 +377,10 @@ textarea {
   flex-direction: column;
 }
 .menu-card:hover {
-  border-color: var(--brick);
+  border-color: var(--red);
 }
 .menu-card--sold-out {
-  background: #f4eee6;
+  background: #121214;
 }
 .menu-card__image {
   width: 100%;
@@ -388,7 +398,7 @@ textarea {
   margin-bottom: 0.25rem;
 }
 .menu-card__link {
-  color: var(--ink);
+  color: var(--text);
   text-decoration: none;
 }
 .menu-card__link::after {
@@ -424,7 +434,7 @@ textarea {
   justify-content: center;
   background: var(--amber-bg);
   color: var(--muted);
-  border: 2px dashed #946200;
+  border: 2px dashed var(--amber);
   font-weight: 600;
   text-align: center;
   min-height: 140px;
@@ -445,7 +455,7 @@ textarea {
 .size-picker {
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: var(--paper);
+  background: var(--surface);
   margin: 0 0 1rem;
   padding: 0.5rem 1rem 1rem;
 }
@@ -464,7 +474,7 @@ textarea {
   height: 24px;
 }
 .price-box {
-  background: var(--paper);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 0.75rem 1rem;
@@ -489,5 +499,20 @@ textarea {
 @media (min-width: 720px) {
   .details {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+  accent-color: var(--red);
+}
+
+@media (max-width: 480px) {
+  .nav-list {
+    gap: 0.1rem;
+  }
+  .nav-list a {
+    padding: 0 0.55rem;
+    font-size: 0.95rem;
   }
 }

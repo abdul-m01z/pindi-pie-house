@@ -7,8 +7,8 @@
   white-space: nowrap;
 }
 .cart-count {
-  background: var(--paper);
-  color: var(--brick-dark);
+  background: var(--red);
+  color: var(--on-red);
   border-radius: 999px;
   padding: 0 0.5rem;
   margin-left: 0.3rem;
@@ -18,11 +18,11 @@
 .kitchen-status {
   padding: 0.6rem 0.9rem;
   border-radius: var(--radius);
-  border: 2px solid var(--olive);
-  background: var(--olive-bg);
+  border: 2px solid var(--green);
+  background: var(--green-bg);
 }
 .kitchen-status--closed {
-  border-color: var(--brick);
+  border-color: var(--red);
   background: var(--danger-bg);
 }
 
@@ -77,7 +77,7 @@
 .cart-line {
   display: grid;
   gap: 0.5rem;
-  background: var(--paper);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 0.9rem;
@@ -103,7 +103,7 @@
 .cart-line__issue,
 .issue-list {
   background: var(--danger-bg);
-  border: 2px solid var(--brick);
+  border: 2px solid var(--red);
   border-radius: var(--radius);
   padding: 0.6rem 0.9rem;
   margin: 0.5rem 0;
@@ -117,7 +117,7 @@
 }
 
 .panel {
-  background: var(--paper);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   margin: 0 0 1rem;
@@ -129,7 +129,7 @@
 }
 
 .summary {
-  background: var(--paper);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 0.75rem 1rem;
@@ -153,7 +153,7 @@
   white-space: nowrap;
 }
 .summary__total {
-  border-top: 2px solid var(--ink);
+  border-top: 2px solid var(--text);
   margin-top: 0.4rem;
   padding-top: 0.5rem !important;
   font-weight: 800;
@@ -165,13 +165,13 @@
 }
 .sim-note {
   background: var(--amber-bg);
-  border: 1px solid #946200;
+  border: 1px solid var(--amber);
   border-radius: var(--radius);
   padding: 0.5rem 0.9rem;
 }
 .status-message--success {
-  border-color: var(--olive);
-  background: var(--olive-bg);
+  border-color: var(--green);
+  background: var(--green-bg);
 }
 
 @media (min-width: 720px) {
@@ -191,7 +191,7 @@
 
 /* Order bar: fees, minimum and tax shown before the cart */
 .order-bar {
-  background: var(--paper);
+  background: var(--surface);
   border: 2px solid var(--line);
   border-radius: var(--radius);
   padding: 0.75rem 1rem;
@@ -206,7 +206,7 @@
   align-items: center;
   cursor: pointer;
   font-weight: 700;
-  color: var(--brick-dark);
+  color: var(--red-text);
 }
 .order-bar__change[open] > summary {
   margin-bottom: 0.5rem;
@@ -232,8 +232,8 @@
   cursor: pointer;
 }
 .mode-option:has(input:checked) {
-  border-color: var(--brick);
-  background: var(--amber-bg);
+  border-color: var(--red);
+  background: #2a1214;
 }
 .mode-option input {
   width: 24px;
@@ -266,17 +266,17 @@
   padding: 0.5rem 0.75rem;
   border: 2px solid var(--line);
   border-radius: var(--radius);
-  background: var(--paper);
+  background: var(--surface);
   font: inherit;
   text-align: left;
   cursor: pointer;
 }
 .area-option:hover {
-  border-color: var(--brick);
+  border-color: var(--red);
 }
 .area-option--selected {
-  border-color: var(--olive);
-  background: var(--olive-bg);
+  border-color: var(--green);
+  background: var(--green-bg);
   font-weight: 700;
 }
 .area-option__state {
@@ -284,19 +284,19 @@
   font-size: 0.85rem;
 }
 .area-option--selected .area-option__state {
-  color: var(--olive);
+  color: var(--green);
 }
 .not-served,
 .change-notice {
-  border: 2px solid #946200;
+  border: 2px solid var(--amber);
   background: var(--amber-bg);
   border-radius: var(--radius);
   padding: 0.6rem 0.9rem;
   margin: 0.5rem 0 0.75rem;
 }
 .change-notice {
-  border-color: var(--olive);
-  background: var(--olive-bg);
+  border-color: var(--green);
+  background: var(--green-bg);
 }
 .change-notice h3 {
   margin-bottom: 0.25rem;
@@ -324,11 +324,11 @@
 /* Demonstration controls */
 .demo-panel {
   margin-top: 1rem;
-  border: 2px dashed #946200;
+  border: 2px dashed var(--amber);
   border-radius: var(--radius);
   background: var(--amber-bg);
   padding: 0.5rem 1rem 1rem;
-  color: var(--ink);
+  color: var(--text);
 }
 .demo-panel summary {
   min-height: 44px;
@@ -346,4 +346,76 @@
 .demo-panel__second {
   margin-top: 0.5rem;
   font-weight: 700;
+}
+
+/* Scroll-driven hero: the section is tall, the picture stays on screen while the user scrolls through it. */
+.scroll-hero {
+  position: relative;
+  height: 300vh;
+  background: #000;
+}
+.scroll-hero__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+.scroll-hero__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.scroll-hero__sticky::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.45) 55%, rgba(0, 0, 0, 0.15) 100%);
+  pointer-events: none;
+}
+.scroll-hero__text {
+  position: absolute;
+  z-index: 1;
+  left: max(1rem, calc((100% - 1080px) / 2 + 1rem));
+  bottom: 12vh;
+  max-width: 28rem;
+  padding-right: 1rem;
+}
+.scroll-hero__text h1 {
+  font-size: clamp(2.2rem, 6vw, 3.6rem);
+}
+.scroll-hero__lead {
+  font-size: 1.15rem;
+}
+.scroll-hero__hint {
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-hero {
+    height: auto;
+  }
+  .scroll-hero__sticky {
+    position: relative;
+    height: 80vh;
+  }
+  .scroll-hero__hint {
+    display: none;
+  }
+}
+
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 1rem;
+  margin-bottom: 0.5rem;
+}
+.info-grid + section,
+section + section {
+  margin-top: 2rem;
 }

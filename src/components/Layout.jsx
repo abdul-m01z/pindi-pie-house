@@ -1,5 +1,6 @@
 import { NavLink, Link } from 'react-router-dom'
 import { BUSINESS } from '../data/business.js'
+import { CartIcon, HomeIcon, MenuIcon } from './Icons.jsx'
 
 export default function Layout({ children, cartCount, footerExtra }) {
   return (
@@ -16,29 +17,31 @@ export default function Layout({ children, cartCount, footerExtra }) {
             <ul className="nav-list">
               <li>
                 <NavLink to="/" end>
-                  Home
+                  <HomeIcon /> Home
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/menu">Menu</NavLink>
+                <NavLink to="/menu">
+                  <MenuIcon /> Menu
+                </NavLink>
               </li>
               <li>
                 <NavLink to="/cart">
-                  Cart <span className="cart-count">{cartCount}<span className="visually-hidden">{cartCount === 1 ? ' item' : ' items'}</span></span>
+                  <CartIcon /> Cart <span className="cart-count">{cartCount}<span className="visually-hidden">{cartCount === 1 ? ' item' : ' items'}</span></span>
                 </NavLink>
               </li>
             </ul>
           </nav>
         </div>
       </header>
-      <main id="main" className="container main" tabIndex={-1}>
+      <main id="main" className="main" tabIndex={-1}>
         {children}
       </main>
       <footer className="site-footer">
         <div className="container">
           <p>
-            {BUSINESS.name} is a fictional business made for a university assignment. Orders are
-            simulated: nothing is cooked, delivered or charged.
+            Demo project. Orders are simulated: nothing is cooked, delivered or charged. Dish photos
+            are from Unsplash.
           </p>
           {footerExtra}
         </div>

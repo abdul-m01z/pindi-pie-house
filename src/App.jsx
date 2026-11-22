@@ -10,6 +10,7 @@ import CheckoutPage from './pages/CheckoutPage.jsx'
 import ConfirmationPage from './pages/ConfirmationPage.jsx'
 import NotFound from './pages/NotFound.jsx'
 import DemoPanel from './components/DemoPanel.jsx'
+import Page from './components/Page.jsx'
 import { PICKUP_POINT, findArea } from './data/areas.js'
 import { loadMenu } from './lib/mockApi.js'
 import { calculateSummary } from './lib/pricing.js'
@@ -24,9 +25,9 @@ import { useMinutesNow } from './lib/useMinutesNow.js'
 const isCart = (v) =>
   Array.isArray(v) &&
   v.every((l) => l && typeof l.itemId === 'string' && typeof l.sizeId === 'string' && Number.isInteger(l.quantity) && l.quantity > 0)
-const NO_DEMO = { fail: false, empty: false, time: null, stock: {} }
+const NO_DEMO = { fail: false, empty: false, hidePhotos: false, time: null, stock: {} }
 const isDemo = (v) =>
-  v && typeof v.fail === 'boolean' && typeof v.empty === 'boolean' && (v.time === null || Number.isInteger(v.time)) && typeof v.stock === 'object' && v.stock !== null
+  v && typeof v.fail === 'boolean' && typeof v.empty === 'boolean' && typeof v.hidePhotos === 'boolean' && (v.time === null || Number.isInteger(v.time)) && typeof v.stock === 'object' && v.stock !== null
 const isFulfilment = (v) =>
   v && (v.mode === 'delivery' || v.mode === 'pickup') && (v.areaId === null || typeof v.areaId === 'string')
 
@@ -58,8 +59,13 @@ export default function App() {
 
   // Stock overrides from the demo panel stand in for availability changing during the day.
   const menu = useMemo(
-    () => menuState.menu.map((item) => (item.id in demo.stock ? { ...item, stock: demo.stock[item.id] } : item)),
-    [menuState.menu, demo.stock],
+    () =>
+      menuState.menu.map((item) => ({
+        ...item,
+        stock: item.id in demo.stock ? demo.stock[item.id] : item.stock,
+        image: demo.hidePhotos ? null : item.image, // simulates photos that fail to load
+      })),
+    [menuState.menu, demo.stock, demo.hidePhotos],
   )
 
   // A restored area must still be served today, otherwise it is treated as not chosen.
@@ -148,7 +154,7 @@ export default function App() {
     return { ok: true }
   }
 
-  const needMenu = (page) => withMenu(menuState, reload, page)
+  const needMenu = (page) => <Page>{withMenu(menuState, reload, page)}</Page>
 
   return (
     <Layout
@@ -162,7 +168,7 @@ export default function App() {
       }
     >
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home menuState={{ ...menuState, menu }} onReload={reload} />} />
         <Route path="/menu" element={needMenu(<MenuPage menu={menu} onReload={reload} orderBar={orderBar} />)} />
         <Route path="/menu/:id" element={needMenu(<DetailsPage menu={menu} cart={cart} onAddToCart={handleAdd} orderBar={orderBar} />)} />
         <Route
@@ -201,8 +207,8 @@ export default function App() {
             />,
           )}
         />
-        <Route path="/confirmation" element={<ConfirmationPage order={order} />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="/confirmation" element={<Page><ConfirmationPage order={order} /></Page>} />
+        <Route path="*" element={<Page><NotFound /></Page>} />
       </Routes>
     </Layout>
   )
