@@ -74,6 +74,32 @@ export default function FulfilmentPanel({ fulfilment, onChange, idPrefix = 'fp' 
             />
           </div>
 
+          {unserved && (
+            <div className="not-served" role="status">
+              <p>
+                <strong>We do not deliver to {unserved.name} yet.</strong>
+                {current && ` Your chosen area, ${current.name}, is unchanged.`} The closest areas we serve:
+              </p>
+              <ul className="nearby-list">
+                {unserved.nearby.map((near) => {
+                  const area = findArea(near.id)
+                  return (
+                    <li key={near.id}>
+                      <button type="button" className="btn btn--secondary" onClick={() => chooseArea(area)}>
+                        Deliver to {area.name} (about {near.km} km away)
+                      </button>
+                    </li>
+                  )
+                })}
+                <li>
+                  <button type="button" className="btn btn--secondary" onClick={() => chooseMode('pickup')}>
+                    Pick up instead
+                  </button>
+                </li>
+              </ul>
+            </div>
+          )}
+
           {matches.length === 0 ? (
             <div className="not-served" role="status">
               <p>
@@ -112,31 +138,6 @@ export default function FulfilmentPanel({ fulfilment, onChange, idPrefix = 'fp' 
             </ul>
           )}
 
-          {unserved && (
-            <div className="not-served" role="status">
-              <p>
-                <strong>We do not deliver to {unserved.name} yet.</strong>
-                {current && ` Your chosen area, ${current.name}, is unchanged.`} The closest areas we serve:
-              </p>
-              <ul className="nearby-list">
-                {unserved.nearby.map((near) => {
-                  const area = findArea(near.id)
-                  return (
-                    <li key={near.id}>
-                      <button type="button" className="btn btn--secondary" onClick={() => chooseArea(area)}>
-                        Deliver to {area.name} (about {near.km} km away)
-                      </button>
-                    </li>
-                  )
-                })}
-                <li>
-                  <button type="button" className="btn btn--secondary" onClick={() => chooseMode('pickup')}>
-                    Pick up instead
-                  </button>
-                </li>
-              </ul>
-            </div>
-          )}
         </>
       )}
     </section>
