@@ -1,0 +1,13 @@
+:root {
+  --cream: #fff8ef;
+  --ink: #2a1f1a;
+  --brick: #b8321f;
+  --olive: #4d6b2f;
+  --mustard: #e7a93b;
+}
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: system-ui, sans-serif;
+}
