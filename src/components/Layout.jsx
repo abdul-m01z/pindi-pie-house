@@ -1,7 +1,7 @@
 import { NavLink, Link } from 'react-router-dom'
 import { BUSINESS } from '../data/business.js'
 
-export default function Layout({ children, cartCount }) {
+export default function Layout({ children, cartCount, footerExtra }) {
   return (
     <>
       <a className="skip-link" href="#main">
@@ -40,6 +40,7 @@ export default function Layout({ children, cartCount }) {
             {BUSINESS.name} is a fictional business made for a university assignment. Orders are
             simulated: nothing is cooked, delivered or charged.
           </p>
+          {footerExtra}
         </div>
       </footer>
     </>

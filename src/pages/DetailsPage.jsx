@@ -50,7 +50,7 @@ function ItemDetails({ item, cart, onAddToCart, orderBar }) {
             <AvailabilityBadge stock={item.stock} />
           </p>
           <p>
-            <strong>Ingredients:</strong> {item.ingredients.join(', ')}
+            <strong>Ingredients:</strong> {item.ingredients?.length ? item.ingredients.join(', ') : 'Not listed for this dish. Ask us if you have allergies.'}
           </p>
 
           {item.sizes.length > 1 ? (

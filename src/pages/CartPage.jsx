@@ -27,10 +27,24 @@ export default function CartPage({
   onUndo,
   onDismissNotice,
 }) {
+  // Shown after "Fix my cart", also when the fix left the cart empty.
+  const fixNotice =
+    fixMessages.length > 0 ? (
+      <div className="status-message" role="status">
+        <h2 className="status-message__title">We updated your cart</h2>
+        <ul>
+          {fixMessages.map((m) => (
+            <li key={m}>{m}</li>
+          ))}
+        </ul>
+      </div>
+    ) : null
+
   if (lines.length === 0) {
     return (
       <>
         <h1>Your cart</h1>
+        {fixNotice}
         <StatusMessage
           kind="empty"
           title="Your cart is empty"
@@ -52,16 +66,7 @@ export default function CartPage({
     <>
       <h1>Your cart</h1>
       <KitchenStatus nowMinutes={nowMinutes} />
-      {fixMessages.length > 0 && (
-        <div className="status-message" role="status">
-          <h2 className="status-message__title">We updated your cart</h2>
-          <ul>
-            {fixMessages.map((m) => (
-              <li key={m}>{m}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {fixNotice}
       <div className="cart-layout">
         <section aria-labelledby="items-heading">
           <h2 id="items-heading">Items</h2>

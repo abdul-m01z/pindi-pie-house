@@ -11,7 +11,11 @@ export default function QuantityControl({ id, label, value, stock, alreadyInCart
   const plusRule = checkItemQuantity({ quantity: value + 1, stock, alreadyInCart })
 
   const limitText =
-    stock < BUSINESS.maxPerItem ? `Only ${stock} left today` : `Max ${BUSINESS.maxPerItem} per order`
+    stock <= 0
+      ? 'Sold out today'
+      : stock < BUSINESS.maxPerItem
+        ? `Only ${stock} left today`
+        : `Max ${BUSINESS.maxPerItem} per order`
 
   function handleType(e) {
     const raw = e.target.value

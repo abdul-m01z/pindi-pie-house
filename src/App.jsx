@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout.jsx'
 import StatusMessage from './components/StatusMessage.jsx'
@@ -9,6 +9,7 @@ import CartPage from './pages/CartPage.jsx'
 import CheckoutPage from './pages/CheckoutPage.jsx'
 import ConfirmationPage from './pages/ConfirmationPage.jsx'
 import NotFound from './pages/NotFound.jsx'
+import DemoPanel from './components/DemoPanel.jsx'
 import { PICKUP_POINT, findArea } from './data/areas.js'
 import { loadMenu } from './lib/mockApi.js'
 import { calculateSummary } from './lib/pricing.js'
@@ -23,6 +24,9 @@ import { useMinutesNow } from './lib/useMinutesNow.js'
 const isCart = (v) =>
   Array.isArray(v) &&
   v.every((l) => l && typeof l.itemId === 'string' && typeof l.sizeId === 'string' && Number.isInteger(l.quantity) && l.quantity > 0)
+const NO_DEMO = { fail: false, empty: false, time: null, stock: {} }
+const isDemo = (v) =>
+  v && typeof v.fail === 'boolean' && typeof v.empty === 'boolean' && (v.time === null || Number.isInteger(v.time)) && typeof v.stock === 'object' && v.stock !== null
 const isFulfilment = (v) =>
   v && (v.mode === 'delivery' || v.mode === 'pickup') && (v.areaId === null || typeof v.areaId === 'string')
 
@@ -35,22 +39,28 @@ export default function App() {
   const [order, setOrder] = useState(null)
   const [fixMessages, setFixMessages] = useState([])
   const [notice, setNotice] = useState(null) // explains a delivery/pickup change and allows undo
-  const nowMinutes = useMinutesNow()
+  const [demo, setDemo] = useLocalStorageState('pph.demo', NO_DEMO, isDemo)
+  const realMinutes = useMinutesNow()
+  const nowMinutes = demo.time ?? realMinutes
 
-  const reload = useCallback(() => {
-    setMenuState({ status: 'loading', menu: [], error: '' })
-    setLoadCount((n) => n + 1)
-  }, [])
+  const reload = () => setLoadCount((n) => n + 1)
 
   useEffect(() => {
     let cancelled = false
-    loadMenu()
+    setMenuState({ status: 'loading', menu: [], error: '' })
+    loadMenu({ fail: demo.fail, empty: demo.empty })
       .then((menu) => !cancelled && setMenuState({ status: 'ready', menu, error: '' }))
       .catch((err) => !cancelled && setMenuState({ status: 'error', menu: [], error: err.message }))
     return () => {
       cancelled = true // ignore a late response after unmount or a newer request
     }
-  }, [loadCount])
+  }, [loadCount, demo.fail, demo.empty])
+
+  // Stock overrides from the demo panel stand in for availability changing during the day.
+  const menu = useMemo(
+    () => menuState.menu.map((item) => (item.id in demo.stock ? { ...item, stock: demo.stock[item.id] } : item)),
+    [menuState.menu, demo.stock],
+  )
 
   // A restored area must still be served today, otherwise it is treated as not chosen.
   const fulfilment = useMemo(
@@ -59,7 +69,7 @@ export default function App() {
   )
 
   // Derived values: nothing below is stored, it is recalculated from cart, menu and settings.
-  const lines = useMemo(() => resolveCart(cart, menuState.menu), [cart, menuState.menu])
+  const lines = useMemo(() => resolveCart(cart, menu), [cart, menu])
   const subtotal = cartSubtotal(lines)
   const summary = calculateSummary(subtotal, fulfilment.mode)
   const itemCount = lines.reduce((sum, l) => sum + (l.item ? l.quantity : 0), 0)
@@ -106,7 +116,7 @@ export default function App() {
     setCart((prev) => removeLine(prev, key))
   }
   const handleFix = () => {
-    const result = fixCart(cart, menuState.menu)
+    const result = fixCart(cart, menu)
     setCart(result.cart)
     setFixMessages(result.changes)
   }
@@ -118,7 +128,7 @@ export default function App() {
       subtotal,
       mode: fulfilment.mode,
       areaId: fulfilment.areaId,
-      nowMinutes: minutesOfDay(new Date()),
+      nowMinutes: demo.time ?? minutesOfDay(new Date()),
     })
     if (blocking.length > 0) return { ok: false, issues: blocking }
     const area = findArea(fulfilment.areaId)
@@ -141,11 +151,20 @@ export default function App() {
   const needMenu = (page) => withMenu(menuState, reload, page)
 
   return (
-    <Layout cartCount={cart.reduce((sum, l) => sum + l.quantity, 0)}>
+    <Layout
+      cartCount={cart.reduce((sum, l) => sum + l.quantity, 0)}
+      footerExtra={
+        <DemoPanel
+          demo={demo}
+          onChange={(changes) => setDemo((prev) => ({ ...prev, ...changes }))}
+          onReset={() => setDemo(NO_DEMO)}
+        />
+      }
+    >
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/menu" element={needMenu(<MenuPage menu={menuState.menu} onReload={reload} orderBar={orderBar} />)} />
-        <Route path="/menu/:id" element={needMenu(<DetailsPage menu={menuState.menu} cart={cart} onAddToCart={handleAdd} orderBar={orderBar} />)} />
+        <Route path="/menu" element={needMenu(<MenuPage menu={menu} onReload={reload} orderBar={orderBar} />)} />
+        <Route path="/menu/:id" element={needMenu(<DetailsPage menu={menu} cart={cart} onAddToCart={handleAdd} orderBar={orderBar} />)} />
         <Route
           path="/cart"
           element={needMenu(

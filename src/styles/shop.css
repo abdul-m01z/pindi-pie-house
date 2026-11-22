@@ -320,3 +320,30 @@
 .order-bar__line .touch-link {
   margin-left: 0.25rem;
 }
+
+/* Demonstration controls */
+.demo-panel {
+  margin-top: 1rem;
+  border: 2px dashed #946200;
+  border-radius: var(--radius);
+  background: var(--amber-bg);
+  padding: 0.5rem 1rem 1rem;
+  color: var(--ink);
+}
+.demo-panel summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 700;
+}
+.demo-panel__grid {
+  display: grid;
+  gap: 0 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  margin-bottom: 0.5rem;
+}
+.demo-panel__second {
+  margin-top: 0.5rem;
+  font-weight: 700;
+}
