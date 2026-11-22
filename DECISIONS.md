@@ -7,7 +7,7 @@ Screenshots are in `docs/screenshots/`.
 
 | Field | Content |
 | --- | --- |
-| Problem | On the reference site, changing the store or switching between delivery and pickup shows "If you change the store, the cart will reset. Do you want to continue" and the cart is then empty ("Oops! Your cart is empty"). The customer must rebuild the order. |
+| Problem | On the reference site, choosing a different pickup store while the cart has items shows "If you change the store, the cart will reset. Do you want to continue" (Yes / No). After Yes the cart is empty ("Oops! Your cart is empty"). The customer must rebuild the order. |
 | Decision | The cart is a separate piece of state and is never cleared by a delivery/pickup or area change. After the change a "Cart kept" notice lists what changed (items kept, fee added or removed, old and new total, any minimum-order shortfall) and offers **Undo this change**. |
 | Alternative | Keep the reference behaviour but add a confirmation dialog ("Your cart will be emptied"). Rejected: it warns about losing work instead of preventing the loss. |
 | Reason | The customer's task is to get the food they chose to a place they choose. Our prices are the same for delivery and pickup, so nothing in the cart becomes invalid. Keeping it avoids repeated work and abandoned orders. |
@@ -19,7 +19,7 @@ Screenshots are in `docs/screenshots/`.
 
 | Field | Content |
 | --- | --- |
-| Problem | On the reference site the delivery fee first appears in the cart ("Delivery Fee PKR 120"). The summary shows "GST (15 %) PKR 89.85" and "Total PKR 809.00" with no rounding line, so the rows do not add up to the total (599 + 120 + 89.85 = 808.85). Amounts mix formats ("PKR 120", "PKR 599.00", "PKR 0"). |
+| Problem | In the captured screens, the item dialog shows only "Add to Cart PKR 599.00"; the delivery fee and GST appear in the cart ("Delivery Fee PKR 120"). The summary shows "GST (15 %) PKR 89.85" and "Total PKR 809.00" with no rounding line, so the rows do not add up to the total (599 + 120 + 89.85 = 808.85). Amounts mix formats ("PKR 120", "PKR 599.00", "PKR 0"). |
 | Decision | An order bar on the menu and details pages states the fee, the food minimum, and that prices exclude 15% GST, and shows the running total once the cart has items. The details page shows price, GST and price with GST. The summary lists every row, including a signed "Rounding to whole rupees" line, in one money format. |
 | Alternative | Show GST-inclusive prices on every card and leave the summary short. Rejected: it hides the delivery fee and rounding, which are the surprises. |
 | Reason | Customers decide what to order while looking at the menu. Seeing every charge there, and being able to add up the summary themselves, avoids unexpected costs at the end. |

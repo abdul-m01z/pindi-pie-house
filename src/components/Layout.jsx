@@ -24,7 +24,7 @@ export default function Layout({ children, cartCount, footerExtra }) {
               </li>
               <li>
                 <NavLink to="/cart">
-                  Cart <span className="cart-count">{cartCount}<span className="visually-hidden"> items</span></span>
+                  Cart <span className="cart-count">{cartCount}<span className="visually-hidden">{cartCount === 1 ? ' item' : ' items'}</span></span>
                 </NavLink>
               </li>
             </ul>
